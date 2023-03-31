@@ -1,4 +1,4 @@
-# Import Library
+# ------------- Import Library ----------------
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -8,6 +8,7 @@ import wbgapi as wb
 import warnings
 warnings.filterwarnings('ignore')
 
+# --------------- Data Gathering ----------------------------
 # Take the dataset from World-bank 
 # Function for take dataset based name from World-bank
 def search_data(indicator): 
@@ -16,13 +17,14 @@ def search_data(indicator):
     transposed_dataframe = dataframe.T 
     return dataframe, transposed_dataframe
 
+# Save the data to variable
 forest, transposed_forest = search_data('AG.LND.FRST.ZS')
 agriculture, transposed_agriculture = search_data('AG.LND.AGRI.ZS')
 population, transposed_population = search_data('SP.URB.TOTL.IN.ZS')
 gas_emission, transposed_gas_emission = search_data('EN.ATM.GHGT.ZG')
 
 
-# Data Cleaning
+# ----------------- Data Cleaning --------------------------
 # Function for renaming data index and columns
 def data_renaming(dataframe):
     renamed_dataframe = dataframe.copy()
@@ -31,6 +33,7 @@ def data_renaming(dataframe):
     renamed_dataframe.index.names = ['Year']
     return renamed_dataframe
 
+# Save the data to variable
 renamed_forest = data_renaming(transposed_forest)
 renamed_agriculture = data_renaming(transposed_agriculture)
 renamed_population = data_renaming(transposed_population)
@@ -48,13 +51,14 @@ def data_null_handling(dataframe):
         
     return cleaned_dataframe
 
+# Save the data to variable
 cleaned_forest = data_null_handling(renamed_forest)
 cleaned_agriculture = data_null_handling(renamed_agriculture)
 cleaned_population = data_null_handling(renamed_population)
 cleaned_gas_emission = data_null_handling(renamed_gas_emission)
 
 
-# Function for manipulating data
+# --------------------- Data Manipulation Functions -------------------
 # Function for aggregate to global data
 def get_global_data(data, name):
     year_list = data.index
@@ -102,7 +106,7 @@ def corr_table(country):
     country_corr_table = agg_data(country)
     return country_corr_table.corr()
 
-# Function for plotting
+# --------------- Ploting Functions -----------------
 # Function for add line chart in timeseries plot
 def add_line(fig,data,name,label,color):
     x_start = data.index[0]
@@ -179,7 +183,6 @@ def fig_template(fig):
     return fig
 
 # Function for reset annotation
-
 def reset_annot():
     global annotations
     annotations = []
@@ -248,7 +251,7 @@ def add_text(fig, text):
     ),
     )
     
-# Timeseries of Global Forest Area 
+# ---------------- Timeseries of Global Forest Area -----------------
 # Aggregate all country 
 global_forest = get_global_data(cleaned_forest, 'Forest Area (%)')
 y_data = global_forest['Forest Area (%)'].values
@@ -272,7 +275,7 @@ plot(fig, auto_open = True)
 reset_annot()
 
 
-# Timeseries of Gas Emission 
+# --------------- Timeseries of Gas Emission -------------------
 global_emission = get_global_data(cleaned_gas_emission, 'Greenhouse Gas Emissions (%)')
 y_data = global_emission['Greenhouse Gas Emissions (%)'].values
 annual_decrease = get_avg_per_year(global_emission)[0]
@@ -294,7 +297,7 @@ fig.update_layout(annotations = annotations)
 plot(fig, auto_open = True)
 reset_annot()
 
-# Exploring loss of forest area in each country
+# ----------- Exploring loss of forest area in each country --------------
 # Manipulating the data
 forest_area_difference = []
 countries = cleaned_forest.columns
@@ -379,7 +382,7 @@ fig.update_traces(hoverinfo = 'label+percent',
 )
 plot(fig, auto_open = True)
 
-# Puerto Rico vs Nicara Gua Forest Area
+# ------------- Puerto Rico vs Nicara Gua Forest Area ------------
 pri_forest = agg_data('PRI')
 nic_forest = agg_data('NIC')
 y_data = [pri_forest['Forest Area (%)'].values,
@@ -403,7 +406,7 @@ fig.update_layout(annotations = annotations)
 plot(fig, auto_open=True)
 reset_annot()
 
-# Puerto Rico vs Nicaguara Agriculture Land
+# -------------- Puerto Rico vs Nicaguara Agriculture Land ---------
 pri_agriculture = agg_data('PRI')
 nic_agriculture = agg_data('NIC')
 y_data = [pri_agriculture['Agricultural Land (%)'].values,
@@ -429,7 +432,7 @@ plot(fig, auto_open=True)
 reset_annot()
 
 
-# Puerto Rico Urban Population
+# ---------------- Puerto Rico Urban Population -------------
 pri_emission = agg_data('PRI')
 y_data = pri_emission['Urban Population (%)'].values
 
@@ -447,7 +450,7 @@ fig.update_layout(annotations = annotations)
 plot(fig, auto_open = True )
 reset_annot()
 
-# Nicaragua heatmap
+# ------------------- Nicaragua heatmap ----------------
 nic_heatmap = px.imshow(
     corr_table('NIC'),
     text_auto = True, 
@@ -467,7 +470,7 @@ nic_heatmap.update_layout(
 
 plot(nic_heatmap, auto_open=True)
 
-# Puerto Rico heatmap
+# -------------- Puerto Rico heatmap -----------------
 nic_pri = px.imshow(
     corr_table('PRI'),
     text_auto = True,
