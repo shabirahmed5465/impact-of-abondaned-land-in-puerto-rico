@@ -65,7 +65,8 @@ def get_global_data(data, name):
     avg_by_time = [data.loc[year,:].mean() for year in year_list]
     global_data = pd.DataFrame({
         'Year': year_list, 
-        name: avg_by_time}
+        name: avg_by_time
+    }
     )
     global_data.set_index('Year', inplace= True)
     return global_data
@@ -84,15 +85,16 @@ def get_avg_per_year(dataframe):
 
 # Function for aggregate country data
 def agg_data(country):
-    country_forest = cleaned_forest.loc[1990:2020,country]
-    country_agriculture = cleaned_agriculture.loc[1990:2020,country]
-    country_gas_emission = cleaned_gas_emission.loc[1990:2020,country]
-    country_population = cleaned_population.loc[1990:2020,country]
+    country_forest = cleaned_forest.loc[1990:2020, country]
+    country_agriculture = cleaned_agriculture.loc[1990:2020, country]
+    country_gas_emission = cleaned_gas_emission.loc[1990:2020, country]
+    country_population = cleaned_population.loc[1990:2020, country]
     
     concatenated_data = pd.concat([
         country_forest, country_agriculture, 
         country_gas_emission, country_population
-    ], axis=1)
+    ], axis=1
+    )
     
     concatenated_data.columns = [
         'Forest Area (%)', 'Agricultural Land (%)', 
@@ -108,7 +110,7 @@ def corr_table(country):
 
 # --------------- Ploting Functions -----------------
 # Function for add line chart in timeseries plot
-def add_line(fig,data,name,label,color):
+def add_line(fig, data, name, label,color):
     x_start = data.index[0]
     x_end = data.index[-1]
     
@@ -128,8 +130,8 @@ def add_line(fig,data,name,label,color):
             x = np.array(x_start),
             y = np.array(data.loc[x_start,name]),
             mode='markers',
-            marker = dict(size=10, 
-                          color= color
+            marker = dict(size = 10, 
+                          color = color
                      ),
         ),
     )
@@ -139,8 +141,8 @@ def add_line(fig,data,name,label,color):
             x = np.array(x_end + 1.5), 
             y = np.array(data.loc[x_end,name]),
             mode = 'markers',
-            marker = dict(size=10, 
-                          color= color
+            marker = dict(size = 10, 
+                          color = color
                     ),
         ),
     )
@@ -149,7 +151,7 @@ def add_line(fig,data,name,label,color):
 # Function for custom plot template
 def fig_template(fig):
     fig.update_layout(
-        width=700,
+        width = 700,
         xaxis = dict(
             showline = True,
             showgrid = False,
@@ -283,7 +285,7 @@ annual_decrease = get_avg_per_year(global_emission)[0]
 # Creating plot
 fig = go.Figure()
 fig = fig_template(fig)
-fig = add_line(fig, global_emission, 'Greenhouse Gas Emissions (%)','Global', 'red')
+fig = add_line(fig, global_emission, 'Greenhouse Gas Emissions (%)', 'Global', 'red')
 
 # Customizing plot
 reset_annot()
@@ -344,7 +346,8 @@ fig.update_layout(
     yaxis = dict(
             showgrid = True,
             zeroline = False,
-            showline = False,gridcolor='black'
+            showline = False,
+            gridcolor='black'
     ),
     plot_bgcolor = 'white'
 )
@@ -365,7 +368,7 @@ forest_status_pieplot.rename(
 
 fig = px.pie(
     forest_status_pieplot,
-    values='Number of countries (%)', names = 'Status', 
+    values = 'Number of countries (%)', names = 'Status', 
     width = 600,
     title = 'Number of countries by forest area status (1990 - 2020)'
 )
@@ -397,13 +400,13 @@ fig = add_line(fig,nic_forest,'Forest Area (%)', 'Nicaragua (NCI)','red')
 # Annotating
 reset_annot()
 for y_trace, label in zip(y_data, labels):
-    annotate(fig,y_trace,label)
+    annotate(fig, y_trace, label)
 
 # Add title    
 add_title(fig, 'Puerto Rico vs Nicaragua Forest Area (%)')
 
 fig.update_layout(annotations = annotations)
-plot(fig, auto_open=True)
+plot(fig, auto_open = True)
 reset_annot()
 
 # -------------- Puerto Rico vs Nicaguara Agriculture Land ---------
@@ -422,13 +425,13 @@ fig = add_line(fig, nic_agriculture, 'Agricultural Land (%)', 'Nicaragua (NCI)',
 reset_annot()
 
 for y_trace, label in zip(y_data, labels):
-    annotate(fig,y_trace,label)
+    annotate(fig, y_trace,label)
 
 # Add title    
 add_title(fig, 'Puerto Rico vs Nicaragua Agriculture Land (%)',25)
 
 fig.update_layout(annotations = annotations)
-plot(fig, auto_open=True)
+plot(fig, auto_open = True)
 reset_annot()
 
 
@@ -438,7 +441,7 @@ y_data = pri_emission['Urban Population (%)'].values
 
 fig = go.Figure()
 fig = fig_template(fig)
-fig = add_line(fig, pri_emission, 'Urban Population (%)', 'Puerto Rico (PRI)','green')
+fig = add_line(fig, pri_emission, 'Urban Population (%)', 'Puerto Rico (PRI)', 'green')
 
 # Annotating
 reset_annot()
@@ -454,7 +457,7 @@ reset_annot()
 nic_heatmap = px.imshow(
     corr_table('NIC'),
     text_auto = True, 
-    color_continuous_scale='RdYlGn',
+    color_continuous_scale = 'RdYlGn',
     title = '<b>Nicaragua</b>'
 )
 
